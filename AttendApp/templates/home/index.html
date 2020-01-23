@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    {% block css %}
+        <link rel="icon" type="image/png" href="{% static 'images/favicon.ico' %}"/>
+        <link href="{% static 'home/base.css' %}" rel="stylesheet">
+    {% endblock %}
+    {% block script %}
+        <script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+    {% endblock %}
+</head>
+<body>
+<div id="navBar">
+    <ul>
+        {% if admin %}
+            <li class='last' style="float: right"><a href="{% url 'logout' %}"><span>Logout</span></a></li>
+            <li class='last' style="float: right"><a href="{% url 'admin_data' %}"><span>Admin</span></a></li>
+        {% else %}
+            <li class='last' style="float: right"><a href="{% url 'login' %}"><span>Login</span></a></li>
+        {% endif %}
+    </ul>
+</div>
+
+<div class="container">
+    <header class="header">
+        <h1 id="title" class="text-center">{{ title }}</h1>
+        <p id="description" class="description text-center"> {{ info }} </p>
+    </header>
+
+    <form id="survey-form" method="post" action="{% url 'mark_attendance' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label id="name-label" for="name">Name</label>
+            <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    class="form-control"
+                    placeholder="Enter your name"
+                    required
+            />
+        </div>
+
+        <div class="form-group">
+            <p>What is your Zone ?</p>
+            <select id="zone_drop" name="zone" class="form-control" required>
+                <option disabled selected value>Select your Zone</option>
+                {% for zone in zones %}
+                    <option value="{{ zone.pk }}">{{ zone.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <p>What is Site ?</p>
+            <select id="site_drop" name="site" class="form-control" required>
+                <option disabled selected value>Select your Site</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <p>What are your shift timings ?</p>
+            {% for shift in shifts %}
+                <label>
+                    <input
+                            name="shift"
+                            value="{{ shift.pk }}"
+                            type="radio"
+                            class="input-radio"
+                            {% if forloop.counter == 1 %}
+                                checked
+                            {% endif %}
+                    />{{shift.in_time}} to {{ shift.out_time }}</label>
+            {% endfor %}
+        </div>
+
+
+        <div class="form-group">
+            <button type="submit" id="submit" class="submit-button">
+                Submit
+            </button>
+        </div>
+    </form>
+</div>
+
+{% block scripts %}
+    <script>
+        $(document).ready(function () {
+            $("#zone_drop").change(function () {
+                zoneFunction(this);
+            });
+
+            function zoneFunction(div) {
+                var $site_drop = $("#site_drop");
+                $site_drop.empty();
+                $site_drop.append("<option disabled selected value>Select your Site</option>");
+                {% for site in sites %}
+                    if ("{{ site.zone.pk }}" == div.value) {
+                        $site_drop.append($("<option></option>").attr("value", "{{ site.pk }}").text("{{ site.name }}"));
+                    }
+                    {#                    {% if site.zone.name is div.value %}#}
+                    {##}
+                    {#                    {% endif %}#}
+                {% endfor %}
+
+            }
+        });
+    </script>
+{% endblock %}
+
+</body>
+</html>

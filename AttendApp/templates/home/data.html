@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <title>{{ title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block css %}
+        <link rel="icon" type="image/png" href="{% static 'images/favicon.ico' %}"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'vendor/perfect-scrollbar/perfect-scrollbar.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'home/data_util.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'home/data_main.css' %}">
+
+
+    {% endblock %}
+
+</head>
+<body>
+
+<div class="limiter">
+    <div class="container-table100">
+        <div class="wrap-table100">
+            <form method="post" action="{% url 'admin_data' %}">
+                {% csrf_token %}
+                <h5 style="display: inline-block; font-weight: bold; padding: 10px; color: #fff3cd">Select a date: </h5>
+                <input style="display: inline-block;" type="date" name="datepicker">
+                <button type="submit" style="margin: 10px;" class="btn bg-primary DownloadButton">View</button>
+
+            </form>
+
+            <div class="table100">
+                <table>
+                    <thead>
+                    <tr class="table100-head">
+                        <th class="column1">Zone</th>
+                        <th class="column2">Site</th>
+                        <th class="column3">Employee Name</th>
+                        <th class="column4">Zonal Manager</th>
+                        <th class="column5">In Time</th>
+                        <th class="column6">Out Time</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for i in data %}
+                        <tr>
+                            <td class="column1">{{ i.zone }}</td>
+                            <td class="column2">{{ i.site }}</td>
+                            <td class="column3">{{ i.employee_name }}</td>
+                            <td class="column4">{{ i.zonal_manager }}</td>
+                            <td class="column5">{{ i.shift.in_time }}</td>
+                            <td class="column6">{{ i.shift.out_time }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/popper.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'vendor/select2/select2.min.js' %}"></script>
+<script src="{% static 'js/data_main.js' %}"></script>
+{#<script src="{% static 'vendor/jquery/jquery-ui.min.js' %}"></script>#}
+
+</body>
+</html>
